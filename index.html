@@ -18,14 +18,166 @@
 			<div class="slides">
 				<section data-markdown>
 					<textarea data-template>
-						## Slide 1
-						A paragraph with some text and a [link](https://hakim.se).
+						## Bernstein-Vazirani
+						*we are getting mathy today*
 						---
-						## Slide 2
+
+						## N-Bitstrings
+						
+						- Often denoted as $x = b_0 b_1 \ldots b_{n-1}$
+
+						\\[\begin{align*}
+						\ket{x} &= \ket{b_0 b_1 \ldots b_{n-1}} \\\\ 
+						&= \ket{b_0} \otimes \ket{b_1} \otimes \ldots \otimes \ket{b_{n-1}}
+						\end{align*}\\] <!-- .element: class="fragment" -->
+						
+						What happens when we apply the a single qubit gate across multiple qubits?<!-- .element: class="fragment" -->
+						- Z?<!-- .element: class="fragment" -->
+						- X?<!-- .element: class="fragment" -->
+						- H?<!-- .element: class="fragment" -->
+						
 						---
-						## Slide 3
+						## Hadamard Gate(s)
+						
+						\\[\ket{0} \xrightarrow{H} \tfrac{1}{\sqrt{2}}(\ket{0} + \ket{1}) = \ket{+}\\]
+						\\[\ket{1} \xrightarrow{H} \tfrac{1}{\sqrt{2}}(\ket{0} - \ket{1}) = \ket{-}\\]
+						
 					</textarea>
-				  </section>
+				</section>
+				<section>
+					<section data-markdown>
+						<textarea data-template>
+							2 qubits:
+							\\[\ket{00} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} + \ket{10} + \ket{11})\\]
+
+							\\[\ket{01} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} + \ket{10} - \ket{11})\\] <!-- .element: class="fragment semi-fade-out" data-fragment-index="1" -->
+							\\[\ket{10} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} - \ket{10} - \ket{11})\\] <!-- .element: class="fragment semi-fade-out" data-fragment-index="1" -->
+							\\[\ket{11} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} - \ket{10} + \ket{11})\\] <!-- .element: class="fragment semi-fade-out" data-fragment-index="1" -->
+						</textarea>
+					</section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							\\[\ket{01} \xrightarrow{H \otimes H} (\ket{0} + \ket{1}) \otimes (\ket{0} - \ket{1}) \\]
+						</textarea>
+					</section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							\\[\ket{01} \xrightarrow{H \otimes H} (\ket{0} + \ket{1}) \otimes (\ket{0} - \ket{1}) \\]
+
+							| $\ket{\psi}$ | sign |
+							| --- | :---: |
+							| $\ket{00}$ | <div class="fragment">+</div> |
+							| $\ket{01}$ | <div class="fragment">-</div> |
+							| $\ket{10}$ | <div class="fragment">+</div> |
+							| $\ket{11}$ | <div class="fragment">-</div> |
+
+							\\[= \ket{0} \otimes \ket{0} - \ket{0} \otimes \ket{1} + \ket{1} \otimes \ket{0} - \ket{1} \otimes \ket{1}\\] <!-- .element: class="fragment" -->
+							\\[= \ket{00} - \ket{01} + \ket{10} - \ket{11}\\] <!-- .element: class="fragment" -->
+
+							---
+							![hadamards](hadamard.png)  <!-- .element height="30%" width="30%" --> ?
+
+							---
+							### Lets think of a single qubit
+							\\[\ket{b_0} \xrightarrow{H} \ket{0} \pm \ket{1}\\]
+
+							\\[\ket{b_0} \xrightarrow{H} \ket{0} + f(b_0) \ket{1}\\] <!-- .element: class="fragment" -->
+							
+							---
+							\\[f(0) = 0\\]
+							\\[f(1) = -1\\]
+
+							\\[f(b) = (-1)^b \\] <!-- .element: class="fragment" -->
+
+							---
+							\\[\ket{b_0} \xrightarrow{H} \ket{0} \pm \ket{1}\\]
+
+							\\[\ket{b_0} \xrightarrow{H} \ket{0} + f(b_0) \ket{1}\\]
+							\\[\ket{b_0} \xrightarrow{H} \ket{0} + (-1)^{b_0} \ket{1}\\] <!-- .element: class="fragment" -->
+							**We are going to be using this later...** <!-- .element: class="fragment" -->
+							
+							### JACK TODO (move this later section to when it needs to be introduced in the presentation)
+							\\[\ket{b_0} \xrightarrow{H} (-1)^{b_0 \cdot 0} \ket{0} + (-1)^{b_0 \cdot 1} \ket{1}\\]
+							\\[\ket{b_0} \xrightarrow{H} \sum_{y \in \\{0, 1\\}} (-1)^{b_0 \cdot y} \ket{y}\\]
+						</textarea>
+					</section>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Definitions
+						- Bitwise inner product \\[s \cdot x = \sum_{i=0}^{n-1} s_i x_i\\]
+						- Example: $s = 1011, x = 1101$  \\[\Rightarrow s \cdot x = 1 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 1 = 2\\]
+						- Interpretation(s): # of bits in common, hamming weight of s XNOR x <!-- .element: class="fragment" -->
+						---
+
+						## Motivation 
+						- Given a function, $f: \\{0,1\\}^n \rightarrow \\{0,1\\}$
+						- Want to find the hidden bit string $s$ such that:
+						\\[f(x) = s \cdot x \\;(\bmod\\; 2)\\]
+						- Example: $n = 5, s = 10101$, <!-- .element: class="fragment" -->
+
+						\\[\begin{align*}
+						f(x) &= 10101 \cdot x \\;(\bmod\\; 2) \\\\
+						f(00011) &= 1
+						\end{align*}\\]
+						<!-- .element: class="fragment" -->
+
+						- Interpretation: $f$ is a black box, parity of bitwise inner product <!-- .element: class="fragment" -->
+					</textarea>
+				</section>
+				<section data-auto-animate data-markdown>
+					<textarea data-template>
+						\\[f: \\{0,1\\}^n \rightarrow \\{0,1\\}\\]
+						\\[f(x) = s \cdot x \\;(\bmod\\; 2)\\]
+					</textarea>
+				</section>
+				<section data-auto-animate data-markdown>
+					<textarea data-template>
+						\\[f: \\{0,1\\}^n \rightarrow \\{0,1\\}\\]
+						\\[f(x) = s \cdot x \\;(\bmod\\; 2)\\]
+						
+						Classically, what if we don't know $s$?
+					</textarea>
+				</section>
+				<section data-auto-animate data-markdown>
+					<textarea data-template>
+						\\[\htmlData{id=eq1}{f: \\{0,1\\}^n \rightarrow \\{0,1\\}}\\]
+						\\[\htmlData{id=eq2}{f(x) = s \cdot x \\;(\bmod\\; 2)}\\]
+						
+						Classically, what if we don't know $s$?
+						- Query $f$ with enough different $x$'s?
+						- $O(2^n)$ queries?
+						- No, we can do better!
+					</textarea>
+				</section>
+				<section data-auto-animate data-auto-animate-restart data-markdown>
+					<textarea data-template>
+						## Classical(ly)
+						- Query getting one bit at a time
+						- $O(n)$ queries <!-- .element: class="fragment" -->
+
+						\\[\begin{align*}
+						f(00001) &= 1 \\\\
+						f(00010) &= 0 \\\\
+						f(00100) &= 0 \\\\
+						f(01000) &= 1 \\\\
+						f(10000) &= 1 \\\\
+						\end{align*}\\]	<!-- .element: class="fragment" -->
+
+						\\[s = 11001\\] <!-- .element: class="fragment" -->
+						- Cannot do better than this (classically) <!-- .element: class="fragment" -->
+					</textarea>
+				</section>
+
+				<section data-auto-animate data-markdown>
+					<textarea data-template>
+						## Quantum(ly)
+						- Query all at once
+						- $O(1)$ queries
+						- $O(n)$ gates* 
+						- $O(n)$ qubits
+					</textarea>
+				</section>
 			</div>
 		</div>
 
@@ -33,6 +185,7 @@
 		<script src="plugin/notes/notes.js"></script>
 		<script src="plugin/markdown/markdown.js"></script>
 		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
 		<script>
 			// More info about initialization & config:
 			// - https://revealjs.com/initialization/
@@ -40,8 +193,14 @@
 			Reveal.initialize({
 				hash: true,
 
+				katex: {
+					version: 'latest',
+					strict: false,
+					trust: true,
+				},
+
 				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+				plugins: [ RevealMath.KaTeX, RevealMarkdown, RevealHighlight, RevealNotes ]
 			});
 		</script>
 	</body>
