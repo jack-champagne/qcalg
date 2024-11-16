@@ -72,7 +72,11 @@
 							| $\ket{11}$ | <div class="fragment">-</div> |
 
 							\\[= \ket{0} \otimes \ket{0} - \ket{0} \otimes \ket{1} + \ket{1} \otimes \ket{0} - \ket{1} \otimes \ket{1}\\] <!-- .element: class="fragment" -->
-							\\[= \ket{00} - \ket{01} + \ket{10} - \ket{11}\\] <!-- .element: class="fragment" -->
+							
+							---
+							\\[= \ket{0} \otimes \ket{0} - \ket{0} \otimes \ket{1} + \ket{1} \otimes \ket{0} - \ket{1} \otimes \ket{1}\\]
+							
+							\\[= \ket{00} - \ket{01} + \ket{10} - \ket{11}\\]
 
 							---
 							![hadamards](hadamard.png)  <!-- .element height="30%" width="30%" --> ?
@@ -95,10 +99,6 @@
 							\\[\ket{b_0} \xrightarrow{H} \ket{0} + f(b_0) \ket{1}\\]
 							\\[\ket{b_0} \xrightarrow{H} \ket{0} + (-1)^{b_0} \ket{1}\\] <!-- .element: class="fragment" -->
 							**We are going to be using this later...** <!-- .element: class="fragment" -->
-							
-							### JACK TODO (move this later section to when it needs to be introduced in the presentation)
-							\\[\ket{b_0} \xrightarrow{H} (-1)^{b_0 \cdot 0} \ket{0} + (-1)^{b_0 \cdot 1} \ket{1}\\]
-							\\[\ket{b_0} \xrightarrow{H} \sum_{y \in \\{0, 1\\}} (-1)^{b_0 \cdot y} \ket{y}\\]
 						</textarea>
 					</section>
 				</section>
@@ -107,19 +107,17 @@
 						## Definitions
 						- Bitwise inner product \\[s \cdot x = \sum_{i=0}^{n-1} s_i x_i\\]
 						- Example: $s = 1011, x = 1101$  \\[\Rightarrow s \cdot x = 1 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 1 = 2\\]
-						- Interpretation(s): # of `1` bits in common, hamming weight of (s && x) <!-- .element: class="fragment" -->
+						- \# of 1 bits in common / hamming weight of (s & x) <!-- .element: class="fragment" -->
 						---
 
 						## Motivation 
 						- Given a function, $f: \\{0,1\\}^n \rightarrow \\{0,1\\}$
-						- Want to find the hidden bit string $s$ such that:
-						\\[f(x) = s \cdot x \\;(\bmod\\; 2)\\]
+						- Find $s$ (*secret*):$\quad f(x) = s \cdot x \\;(\bmod\\; 2)$
 						- Example: $n = 5, s = 10101$, <!-- .element: class="fragment" -->
 
-						\\[\begin{align*}
-						f(x) &= 10101 \cdot x \\;(\bmod\\; 2) \\\\
-						f(00011) &= 1
-						\end{align*}\\]
+						\\[f(x) = 10101 \cdot x \\;(\bmod\\; 2) \\] <!-- .element: class="fragment" -->
+
+						\\[f(00011) = 1\\]
 						<!-- .element: class="fragment" -->
 
 						- Interpretation: $f$ is a black box, parity of bitwise inner product <!-- .element: class="fragment" -->
@@ -153,8 +151,7 @@
 				<section data-auto-animate data-auto-animate-restart data-markdown>
 					<textarea data-template>
 						## Classical(ly)
-						- Query getting one bit at a time
-						- $O(n)$ queries <!-- .element: class="fragment" -->
+						- $O(n)$ queries... **query getting one bit at a time** <!-- .element: class="fragment" -->
 
 						\\[\begin{align*}
 						f(00001) &= 1 \\\\
@@ -172,10 +169,139 @@
 				<section data-auto-animate data-markdown>
 					<textarea data-template>
 						## Quantum(ly)
-						- Query all at once
+						- Query "all at once"
 						- $O(1)$ queries
 						- $O(n)$ gates* 
 						- $O(n)$ qubits
+
+						
+						
+					</textarea>
+				</section>
+				<section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							## Phase Kickback
+							![kickback](kickback.png) <!-- .element height="20%" width="20%" -->		
+						</textarea>
+					</section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							2 qubits:
+							\\[\ket{00} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} + \ket{10} + \ket{11})\\]
+							\\[\ket{01} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} + \ket{10} - \ket{11})\\]
+							\\[\ket{10} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} - \ket{10} - \ket{11})\\]
+							\\[\ket{11} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} - \ket{10} + \ket{11})\\]
+						</textarea>
+					</section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							\\[\ket{00} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} + \ket{10} + \ket{11}) \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} + \ket{01} + \ket{10} + \ket{11}) \\]
+							\\[\ket{01} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} + \ket{10} - \ket{11}) \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} - \ket{01} - \ket{10} + \ket{11}) \\]
+							\\[\ket{10} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} + \ket{01} - \ket{10} - \ket{11}) \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} + \ket{01} - \ket{10} - \ket{11}) \\]
+							\\[\ket{11} \xrightarrow{H \otimes H} \tfrac{1}{2}(\ket{00} - \ket{01} - \ket{10} + \ket{11}) \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} - \ket{01} + \ket{10} - \ket{11}) \\]
+						</textarea>
+					</section>
+					<section data-markdown data-auto-animate>
+						<textarea data-template>
+							\\[\ket{00} \xrightarrow{H \otimes H} \dots \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} + \ket{01} + \ket{10} + \ket{11}) \xrightarrow{H \otimes H} \ket{00}\\]
+							\\[\ket{01} \xrightarrow{H \otimes H} \dots \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} - \ket{01} - \ket{10} + \ket{11}) \xrightarrow{H \otimes H} \ket{11}\\]
+							\\[\ket{10} \xrightarrow{H \otimes H} \dots \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} + \ket{01} - \ket{10} - \ket{11}) \xrightarrow{H \otimes H} \ket{10}\\]
+							\\[\ket{11} \xrightarrow{H \otimes H} \dots \xrightarrow{CNOT} \tfrac{1}{2}(\ket{00} - \ket{01} + \ket{10} - \ket{11}) \xrightarrow{H \otimes H} \ket{01}\\]
+						</textarea>
+					</section>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Our oracle
+						- how do we encode $f(x)$ and param. $s$ as an oracle - for example, $f(x) = 110001 \cdot x \\;(\bmod\\; 2)$?
+						
+						![encoding](encoding.png) <!-- .element height="30%" width="30%" class="fragment" fig-align="center" -->
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+						## A visual look
+
+						![oracle](oracle-1.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+
+						![oracle](oracle-2.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+
+						![oracle](oracle-3.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+
+						![oracle](oracle-4.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+
+						![oracle](oracle-5.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+					</textarea>
+				</section>
+				<section data-markdown data-transition="none">
+					<textarea data-template>
+
+						![oracle](oracle-6.png) <!-- .element height="40%" width="40%" fig-align="center" -->
+
+						- readout would give $f(x) = 1$
+						- $s = 110001$ recovered! 
+						- oracle called once!
+						- superposition, writing the function value into the amplitudes, transforming back into computational basis
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Bernstein-Vazirani phase query
+						Remember this?
+						\\[\ket{b_0} \xrightarrow{H} \ket{0} + (-1)^{b_0} \ket{1}\\]
+
+						\\[\ket{b_0} \xrightarrow{H} (-1)^{b_0 \cdot 0} \ket{0} + (-1)^{b_0 \cdot 1} \ket{1}\\] <!-- .element: class="fragment" -->
+
+						\\[\ket{b_0} \xrightarrow{H} \sum_{y \in \\{0, 1\\}} (-1)^{b_0 \cdot y} \ket{y}\\] <!-- .element: class="fragment" -->
+
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## Bernstein-Vazirani phase query
+						Remember this?
+						\\[\ket{b_0} \xrightarrow{H} \ket{0} + (-1)^{b_0} \ket{1}\\]
+
+						\\[\ket{b_0} \xrightarrow{H} (-1)^{b_0 \cdot 0} \ket{0} + (-1)^{b_0 \cdot 1} \ket{1}\\] <!-- .element: class="fragment" -->
+
+						\\[\ket{b_0} \xrightarrow{H} \sum_{y \in \\{0, 1\\}} (-1)^{b_0 \cdot y} \ket{y}\\] <!-- .element: class="fragment" -->
+
+						---
+						\\[\ket{b_0} \xrightarrow{H} \sum_{y \in \\{0, 1\\}} (-1)^{b_0 \cdot y} \ket{y}\\]
+
+						Let $x$ be a bitstring of length $n$ $= b_0 b_1 \dots b_{n-1}$ and $s$ be a bitstring of length $n$. Let $f$ here denote the Bernstein-Vazirani oracle function.
+
+						Generally, the top can be written as:
+						\\[H^{\otimes n} \ket{x} = \sum_{y \in \\{0, 1\\}^n} (-1)^{x \cdot y} \ket{y}\\] <!-- .element: class="fragment" -->
+					
+						---
+						Note that after the query, the state is:
+						\\[ U_F H^{\otimes n} \ket{0}^n = \sum_{x \in \\{0, 1\\}^n} (-1)^{s \cdot x} \ket{x}\\]
+
+						When we Hadamard again: the qubits that picked up a phase (kickback), change ($s_i = 1$, from $\ket{-}$ to $\ket{1}$, ...) <!-- .element: class="fragment" -->
+						\\[  H^{\otimes n} \left( \sum_{x \in \\{0, 1\\}^n} (-1)^{s \cdot x} \ket{x} \right) = \ket{s} \\]
 					</textarea>
 				</section>
 			</div>
@@ -192,6 +318,9 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+
+				width: 1920,
+  				height: 1080,
 
 				katex: {
 					version: 'latest',
